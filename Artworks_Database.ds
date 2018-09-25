@@ -1,0 +1,975 @@
+/*
+ * Author       : zoho_nic137
+ * Generated on : 25-Sep-2018 12:00:27
+ * Version      : 1.0
+ */
+ application "Artworks Database"
+ {
+ 	date format = "dd-MMM-yyyy"
+ 	time zone = "America/Los_Angeles"
+	section Artworks
+	{
+		icon = "design-2-canvas"
+		form Add_Artwork
+		{
+			displayname = "Add Artwork"
+			success message = "Artwork Added Successfully"
+			field alignment = left
+			must have Artwork_Title
+			(
+    			type = text
+				displayname = "Artwork Title"
+    			description
+    			[
+    				type = tooltip
+    			 	message = "Add a title to this artwork."
+    			]
+				width = 200px
+			)
+			Add_Artist
+			(
+				type = picklist
+				displayname = "Add Artist"
+				values  = Add_Artist.ID
+    			displayformat = [Name]
+				sortorder = ascending
+				width = 200px
+			)
+			Add_Location
+			(
+				type = picklist
+				displayname = "Add Location"
+				values  = Add_Location.ID
+    			bidirectional = Add_Artwork_Artwork_Title1
+    			displayformat = [Location_Name]
+				sortorder = ascending
+				width = 200px
+			)
+			Latitude
+			(
+				type = decimal
+				maxchar = 19
+				decimalplace = 16
+				width = 200px
+			)
+			Longitude
+			(
+				type = decimal
+				maxchar = 19
+				decimalplace = 16
+				width = 200px
+			)
+			must have Program
+			(
+				type = picklist
+				values = {"2-D", "Paint Bar", "3-D", "Wayfinding", "Education", "Storytelling", "Events"}
+				sortorder = ascending
+				width = 200px
+			)
+			must have Medium_field1
+			(
+				type = list
+				displayname = "Medium"
+				values = {"Medium A", "Medium B", "Medium C"}
+				sortorder = ascending
+				height = 60px
+    			description
+    			[
+    				type = tooltip
+    			 	message = "Which media describe the work?"
+    			]
+				width = 200px
+			)
+			must have Date_Created
+			(
+    			type = datetime
+				displayname = "Date Created"
+				alloweddays = 0,1,2,3,4,5,6
+    			description
+    			[
+    				type = tooltip
+    			 	message = "When was this work originally created?"
+    			]
+				width = 200px
+			)
+			Date_Installed
+			(
+    			type = datetime
+				displayname = "Date Installed"
+				alloweddays = 0,1,2,3,4,5,6
+    			description
+    			[
+    				type = tooltip
+    			 	message = "When did"
+    			]
+				width = 200px
+			)
+			Display_Artwork_Publically
+			(
+    			type = checkbox
+				displayname = "Display Artwork Publically"
+				initial value = false
+    			description
+    			[
+    				type = tooltip
+    			 	message = "Checking this box ensures that this work will display on The Avenue Concept's website."
+    			]
+				width = 300px
+			)
+			Feature_Artwork_on_Homepage
+			(
+    			type = checkbox
+				displayname = "Feature Artwork on Homepage"
+				initial value = false
+				width = 300px
+			)
+			Add_Media
+			(
+				type = list
+				displayname = "Add Media"
+				values  = Add_Media.ID
+    			bidirectional = Add_Artwork_Artwork_Title
+    			displayformat = [Media_Title]
+				sortorder = ascending
+				height = 60px
+				width = 200px
+			)
+			Artwork_Description
+			(
+    			type = textarea
+				displayname = "Artwork Description"
+				height = 100px
+    			description
+    			[
+    				type = tooltip
+    			 	message = "Write a description of this work for reference and use in press releases and other communications."
+    			]
+				width = 200px
+			)
+			Media_Coverage
+			(
+    			type = textarea
+				displayname = "Media Coverage"
+				height = 100px
+				width = 200px
+			)
+			Partners_Sponsors
+			(
+				type = grid
+				displayname = "Partners & Sponsors"
+				must have unique Name
+				(
+    				type = text
+					width = 200px
+				)
+				width = 300px
+			)
+			Donors
+			(
+				type = grid
+				must have unique Donor_Name
+				(
+    				type = text
+					displayname = "Donor Name"
+					width = 200px
+				)
+				width = 300px
+			)
+			Grants
+			(
+				type = grid
+				must have unique Name
+				(
+    				type = text
+					width = 200px
+				)
+				width = 300px
+			)
+	
+			customize
+			(
+				icon = "social-1-logo-dribbble"
+			)
+			actions
+			{
+				on add
+				{
+					submit
+					(
+   						type = submit
+   						displayname = "Add"
+					)
+					reset
+					(
+   						type = reset
+   						displayname = "Reset"
+					)
+				}
+				on edit
+				{
+					update
+					(
+   						type = submit
+   						displayname = "Update"
+					)
+					cancel
+					(
+   						type = cancel
+   						displayname = "Cancel"
+					)
+				}
+			}
+		}
+		summary All_Artworks
+		{
+			displayName = "All Artworks"
+			show all rows from Add_Artwork    
+			(
+				Display_Artwork_Publically as "Display Artwork Publically"
+				Partners_Sponsors.Name as "Partners & Sponsors"
+				Donors.Donor_Name as "Donors"
+				Grants.Name as "Grants"
+				Media_Coverage as "Media Coverage"
+				Add_Media as "Add Media"
+				Latitude
+				Longitude
+				Feature_Artwork_on_Homepage as "Feature Artwork on Homepage"
+				Medium_field1 as "Medium"
+				Add_Location as "Add Location"
+				Artwork_Description as "Artwork Description"
+				Date_Installed as "Date Installed"
+				Date_Created as "Date Created"
+				Program
+				Artwork_Title as "Artwork Title"
+				Add_Artist as "Add Artist"
+				Add_Media.Image
+			)
+			options
+			(
+				display rows = 10
+				icon = "design-2-selection"
+			)
+		}
+		custom All_Featured_Artwork
+		{
+			displayName = "All Featured Artwork"
+			show all rows from Add_Artwork  [Display_Artwork_Publically == true && Feature_Artwork_on_Homepage == true]  
+			(
+				Latitude
+				Longitude
+				Date_Created as "Date Created"
+				Date_Installed as "Date Installed"
+				Display_Artwork_Publically as "Display Artwork Publically"
+				Feature_Artwork_on_Homepage as "Feature Artwork on Homepage"
+				Add_Media as "Add Media"
+				Media_Coverage as "Media Coverage"
+				Medium_field1 as "Medium"
+				Add_Artist as "Add Artist"
+				Artwork_Title as "Artwork Title"
+				Add_Location as "Add Location"
+				Program
+				Artwork_Description as "Artwork Description"
+				Add_Artist.Name
+			)
+			options
+			(
+				icon = "social-1-logo-dribbble"
+	 		)
+		}
+	}
+	section Artists
+	{
+		icon = "media-2-guitar"
+		form Add_Artist
+		{
+			displayname = "Add Artist"
+			success message = "Artist Added Successfully"
+			field alignment = left
+			must have unique Name
+			(
+    			type = text
+				width = 200px
+			)
+			Add_Artwork_Artwork_Title
+			(
+				type = picklist
+				displayname = "Artwork"
+				values  = Add_Artwork.ID
+    			displayformat = [Artwork_Title]
+				width = 300px
+			)
+			Biography
+			(
+    			type = textarea
+				height = 100px
+				width = 200px
+			)
+			Phone_Number
+			(
+    			type = phonenumber
+				displayname = "Phone"
+				width = 200px
+			)
+			Email
+			(
+    			type = email
+				width = 200px
+			)
+			Website
+			(
+    			type = url
+				enable  linkname
+				width = 140px
+			)
+			Country_of_Origin
+			(
+    			type = text
+				displayname = "Country of Origin"
+				width = 200px
+			)
+			Current_Location
+			(
+    			type = text
+				displayname = "Current Location"
+				width = 200px
+			)
+			Social_Media
+			(
+				type = grid
+				displayname = "Social Media"
+				must have Platform_Name
+				(
+    				type = text
+					displayname = "Platform Name"
+					width = 200px
+				)
+				must have Account_Handle
+				(
+    				type = text
+					displayname = "Account Handle"
+					width = 200px
+				)
+				width = 300px
+			)
+	
+			customize
+			(
+				icon = "design-2-3d-29"
+			)
+			actions
+			{
+				on add
+				{
+					submit
+					(
+   						type = submit
+   						displayname = "Add"
+					)
+					reset
+					(
+   						type = reset
+   						displayname = "Reset"
+					)
+				}
+				on edit
+				{
+					update
+					(
+   						type = submit
+   						displayname = "Update"
+					)
+					cancel
+					(
+   						type = cancel
+   						displayname = "Cancel"
+					)
+				}
+			}
+		}
+		list All_Artists
+		{
+			displayName = "All Artists"
+			show all rows from Add_Artist    
+			(
+				Name
+				Biography
+				Phone_Number as "Phone"
+				Email
+				Website
+				Social_Media.Platform_Name as "Social Media"
+				Country_of_Origin as "Country of Origin"
+				Current_Location as "Current Location"
+			)
+			options
+			(
+				icon = "media-2-guitar"
+	 		)
+		}
+	}
+	section Locations
+	{
+		icon = "location-pin-copy"
+		form Add_Location
+		{
+			displayname = "Add Location"
+			success message = "Location Added Successfully"
+			field alignment = left
+			Add_Artwork_Artwork_Title
+			(
+				type = picklist
+				displayname = "Add Artwork - Artwork Title"
+				values  = Add_Artwork.ID
+    			displayformat = [Artwork_Title]
+				width = 300px
+			)
+			Add_Artwork_Artwork_Title1
+			(
+				type = list
+				displayname = "Add Artwork - Artwork Title"
+				values  = Add_Artwork.ID
+    			bidirectional = Add_Location
+    			displayformat = [Artwork_Title]
+				height = 60px
+				width = 300px
+			)
+			must have Location_Name
+			(
+    			type = text
+				displayname = "Location Name"
+				width = 200px
+			)
+			must have Latitude
+			(
+				type = decimal
+				maxchar = 19
+				decimalplace = 16
+				width = 200px
+			)
+			must have Longitude
+			(
+				type = decimal
+				maxchar = 19
+				decimalplace = 1
+				width = 200px
+			)
+			Location_History_Context
+			(
+    			type = textarea
+				displayname = "Location History / Context"
+				height = 100px
+				width = 200px
+			)
+			Site_Description
+			(
+    			type = textarea
+				displayname = "Site Description"
+				height = 100px
+				width = 200px
+			)
+			Urban_Conditions
+			(
+    			type = textarea
+				displayname = "Urban Conditions"
+				height = 100px
+				width = 200px
+			)
+			Stakeholders
+			(
+    			type = textarea
+				height = 100px
+				width = 200px
+			)
+	
+			customize
+			(
+				icon = "location-pin-add"
+			)
+			actions
+			{
+				on add
+				{
+					Add_Location
+					(
+   						type = submit
+   						displayname = "Add Location"
+		                         			PreSubmit  =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?><preoncommit><openurl/><successmsg><type><![CDATA[sucmsgtimeout]]></type><value><![CDATA[Location Added Successfully]]></value><timeout><![CDATA[2]]></timeout></successmsg></preoncommit>"
+					)
+					reset
+					(
+   						type = reset
+   						displayname = "Reset"
+					)
+				}
+				on edit
+				{
+					update
+					(
+   						type = submit
+   						displayname = "Update"
+					)
+					cancel
+					(
+   						type = cancel
+   						displayname = "Cancel"
+					)
+				}
+			}
+		}
+		list All_Locations
+		{
+			displayName = "All Locations"
+			show all rows from Add_Location    
+			(
+				Location_Name as "Location Name"
+				Latitude
+				Longitude
+				Location_History_Context as "Location History / Context"
+				Site_Description as "Site Description"
+				Urban_Conditions as "Urban Conditions"
+				Stakeholders
+			)
+			options
+			(
+				icon = "location-pin-copy"
+	 		)
+		}
+	}
+	section Medias
+	{
+		icon = "location-bookmark"
+		form Add_Media
+		{
+			displayname = "Add Media"
+			success message = "Media Added Successfully"
+			field alignment = left
+			Media_Title
+			(
+    			type = formula
+				displayname = "Media Title"
+				value =  input.Photographer_Author + " - " + input.Add_Artwork_Artwork_Title.Artwork_Title + " (Image " + input.Image_ID_Number + ")"
+				visibility = false
+				width = 100px
+			)
+			Image_ID_Number
+			(
+    			type = autonumber
+				displayname = "Image ID Number"
+				start index = 1
+				width = 300px
+			)
+			must have Photographer_Author
+			(
+    			type = text
+				displayname = "Photographer / Author"
+				width = 100px
+			)
+			Public
+			(
+    			type = checkbox
+				displayname = "Public Image"
+				initial value = false
+				width = 300px
+			)
+			Add_Artwork_Artwork_Title
+			(
+				type = list
+				displayname = "Artwork"
+				values  = Add_Artwork.ID
+    			bidirectional = Add_Media
+    			displayformat = [Artwork_Title]
+				height = 60px
+				width = 100px
+			)
+			Add_Location
+			(
+				type = picklist
+				displayname = "Add Location"
+				values  = Add_Location.ID
+    			displayformat = [Location_Name]
+				searchable = true
+				sortorder = ascending
+				width = 100px
+			)
+			must have Media_Type
+			(
+				type = picklist
+				displayname = "Media Type"
+				values = {"Primary Image", "Raw Image", "Low Resolution Image", "Press Use Image", "Primary Video", "Long Video", "Short Video", "Timelapse Video", "Supporting Materials", "Other"}
+				sortorder = ascending
+				width = 100px
+			)
+			Image
+			(
+    			type = image
+				enable = title
+				camera = primary
+				show gallery = true
+				switch camera = true
+				width = 140px
+			)
+			Video_URL
+			(
+    			type = url
+				displayname = "Video URL"
+				enable  linkname
+    			description
+    			[
+    				type = help_text
+    			 	message = "Add a link to your video, hosted on youtube.com, here."
+    			]
+				width = 140px
+			)
+			Media_File
+			(
+    			type = upload file
+				displayname = "Non-Image Media"
+				browse = local_drive
+				width = 140px
+			)
+			Lighting_Conditions
+			(
+				type = picklist
+				displayname = "Lighting Conditions"
+				values = {"Daylight", "Interior", "Night"}
+				width = 75px
+			)
+			Date_Taken
+			(
+    			type = date
+				displayname = "Date Created"
+				alloweddays = 0,1,2,3,4,5,6
+				width = 100px
+			)
+			Batch_Number
+			(
+				type = number
+				displayname = "Batch Number"
+				private = true
+				width = 200px
+			)
+	
+			customize
+			(
+				icon = "tech-2-p-add"
+			)
+			actions
+			{
+				on add
+				{
+					submit
+					(
+   						type = submit
+   						displayname = "Add"
+		                         			PreSubmit  =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?><preoncommit><openurl/><successmsg><type><![CDATA[sucmsgtimeout]]></type><value><![CDATA[Media Added Successfully]]></value><timeout><![CDATA[2]]></timeout></successmsg></preoncommit>"
+					)
+					reset
+					(
+   						type = reset
+   						displayname = "Reset"
+					)
+				}
+				on edit
+				{
+					update
+					(
+   						type = submit
+   						displayname = "Update"
+					)
+					cancel
+					(
+   						type = cancel
+   						displayname = "Cancel"
+					)
+				}
+			}
+		}
+		custom All_Medias
+		{
+			displayName = "All Media"
+			show all rows from Add_Media    
+			(
+				Media_File as "Non-Image Media"
+				Date_Taken as "Date Created"
+				Add_Location as "Add Location"
+				Batch_Number as "Batch Number"
+				Video_URL as "Video URL"
+				Public as "Public Image"
+				Media_Title as "Media Title"
+				Image_ID_Number as "Image ID Number"
+				Photographer_Author as "Photographer / Author"
+				Lighting_Conditions as "Lighting Conditions"
+				Image
+				Media_Type as "Media Type"
+				Add_Location.Add_Artwork_Artwork_Title as "Add Artwork - Artwork Title"
+			)
+			options
+			(
+				icon = "tech-webcam-38"
+	 		)
+		}
+	}
+	section Media_Batches
+	{
+		displayname= "Media Batches"
+		icon = "design-2-group"
+		form Add_Media_Batch
+		{
+			displayname = "Add Media Batch"
+			success message = "Media Batch Added Successfully"
+			field alignment = left
+			Batch_Name
+			(
+    			type = formula
+				displayname = "Batch Name"
+				value =  "Media Batch " + input.Batch_Number
+				visibility = false
+				width = 200px
+			)
+			Batch_Number
+			(
+    			type = autonumber
+				displayname = "Batch Number"
+				start index = 1
+				width = 300px
+			)
+			Batch_Status
+			(
+				type = picklist
+				displayname = "Batch Status"
+				values = {"Planned", "Ready", "Committed"}
+				initial value = "Planned"
+				sortorder = ascending
+				width = 200px
+			)
+			must have Batch_Creator
+			(
+    			type = text
+				displayname = "Batch Creator"
+				width = 200px
+			)
+			must have Photographer_Author
+			(
+    			type = text
+				displayname = "Photographer / Author for Batch"
+				width = 200px
+			)
+			must have Media_Type_in_Batch
+			(
+				type = picklist
+				displayname = "Media Type in Batch"
+				values = {"Images", "Video", "Other"}
+				width = 200px
+			)
+			Default_Media_Type_in_Batch
+			(
+				type = picklist
+				displayname = "Default Media Type in Batch"
+				values = {"Primary Image", "Raw Image", "Low Resolution Image", "Press Use Image", "Primary Video", "Long Video", "Short Video", "Timelapse Video", "Supporting Materials", "Other"}
+				width = 200px
+			)
+			Artwork_in_Batch
+			(
+				type = picklist
+				displayname = "Artwork in Batch"
+				values  = Add_Artwork.ID
+    			displayformat = [Artwork_Title]
+				sortorder = ascending
+				width = 200px
+			)
+			Location_in_Batch
+			(
+				type = picklist
+				displayname = "Location in Batch"
+				values  = Add_Location.ID
+    			displayformat = [Location_Name]
+				sortorder = ascending
+				width = 200px
+			)
+			Lighting_Conditions_in_Batch
+			(
+				type = picklist
+				displayname = "Lighting Conditions in Batch"
+				values = {"Daylight", "Nighttime", "Interior"}
+				width = 200px
+			)
+			must have Image_Creation_Date_in_Batch
+			(
+    			type = date
+				displayname = "Image Creation Date for Batch"
+				alloweddays = 0,1,2,3,4,5,6
+				width = 200px
+			)
+			must have Media_Items_Batch
+			(
+				type = grid
+				displayname = "Media Items Batch"
+				Lighting_Conditions_in_Image
+				(
+					type = picklist
+					displayname = "Lighting Conditions in Media"
+					values = {"Daylight", "Nighttime", "Other"}
+					width = 200px
+				)
+				Image_Type
+				(
+					type = picklist
+					displayname = "Image Type"
+					values = {"Primary Image", "Raw Image", "Low Resolution Image", "Press Use Image"}
+					width = 200px
+				)
+				Video_Type
+				(
+					type = picklist
+					displayname = "Video Type"
+					values = {"Primary Vide", "Long Video", "Short Video", "Timelapse Video"}
+					width = 200px
+				)
+				Other_Media_Type
+				(
+					type = picklist
+					displayname = "Other Media Type"
+					values = {"Supporting Materials", "Other"}
+					width = 200px
+				)
+				Image
+				(
+    				type = image
+					source  = file
+					camera = primary
+					show gallery = true
+					switch camera = true
+					width = 200px
+				)
+				Video_URL1
+				(
+    				type = url
+					displayname = "Video URL"
+					enable  linkname
+    				description
+    				[
+    					type = tooltip
+    				 	message = "Add a link to your youtube.com video here."
+    				]
+					width = 140px
+				)
+				Non_Image_Media
+				(
+    				type = upload file
+					displayname = "Non-Image Media"
+				browse = local_drive
+					width = 200px
+				)
+				width = 300px
+			)
+	
+			customize
+			(
+				icon = "tech-2-l-add"
+			)
+			actions
+			{
+				on add
+				{
+					submit
+					(
+   						type = submit
+   						displayname = "Add"
+					)
+					reset
+					(
+   						type = reset
+   						displayname = "Reset"
+					)
+				}
+				on edit
+				{
+					update
+					(
+   						type = submit
+   						displayname = "Update"
+					)
+					cancel
+					(
+   						type = cancel
+   						displayname = "Cancel"
+					)
+				}
+			}
+		}
+		summary All_Media_Batches
+		{
+			displayName = "All Media Batches"
+			show all rows from Add_Media_Batch    
+			(
+				Batch_Name as "Batch Name"
+				Media_Items_Batch as "Media Items Batch"
+				(
+					isLinkEnabled = true
+					field = Media_Items_Batch.Image_Type + " " + Media_Items_Batch.Image
+				)
+				Batch_Number as "Batch Number"
+				Batch_Status as "Batch Status"
+				Photographer_Author as "Photographer / Author for Batch"
+				Media_Type_in_Batch as "Media Type in Batch"
+				Default_Media_Type_in_Batch as "Default Media Type in Batch"
+				Artwork_in_Batch as "Artwork in Batch"
+				Location_in_Batch as "Location in Batch"
+				Lighting_Conditions_in_Batch as "Lighting Conditions in Batch"
+				Image_Creation_Date_in_Batch as "Image Creation Date for Batch"
+			)
+			options
+			(
+				display rows = 10
+				icon = "design-2-group"
+			)
+		}
+	}
+	share_settings
+	{
+			"Read"
+			{
+				name = "Read"
+				type = Users_Permissions
+				permissions = {Chat:true, Predefined:true}
+				description = "This profile will have read permission for all components\n"
+			}
+			"Write"
+			{
+				name = "Write"
+				type = Users_Permissions
+				permissions = {Chat:true, Predefined:true}
+				description = "This profile will have write permission for all components\n"
+			}
+			"Administrator"
+			{
+				name = "Administrator"
+				type = Users_Permissions
+				permissions = {Chat:true, Predefined:true}
+				description = "This profile will have all the permissions.\n"
+			}
+			roles
+			{
+				"CEO"
+				{
+					description = "User belonging to this role can access data of all other users.\n"
+				}
+			}
+	}
+	customize
+	{
+		
+		layout = "tab"
+		color = "black"
+		base theme = "professional"
+		new theme = 1
+		
+		icons =true
+		icons style = solid
+	}
+
+
+	
+
+
+}
+
